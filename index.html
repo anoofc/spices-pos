@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPICES FAST FOOD POS</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header>
+        <h1>SPICES FAST FOOD</h1>
+        <p>KERALA RESTAURANT</p>
+        <p id="todayDate"></p>
+    </header>
+
+    <div class="dashboard">
+
+        <div class="card">
+            <h2>Today's Sales</h2>
+            <h1 id="salesAmount">0.00 SAR</h1>
+        </div>
+
+        <div class="card">
+            <h2>Cash</h2>
+            <h1 id="cashAmount">0.00 SAR</h1>
+        </div>
+
+        <div class="card">
+            <h2>Card</h2>
+            <h1 id="cardAmount">0.00 SAR</h1>
+        </div>
+
+        <div class="card">
+            <h2>Profit</h2>
+            <h1 id="profitAmount">0.00 SAR</h1>
+        </div>
+
+    </div>
+
+    <div class="buttons">
+
+        <button onclick="openPOS()">POS</button>
+
+        <button onclick="openPurchases()">Purchases</button>
+
+        <button onclick="openExpenses()">Expenses</button>
+
+        <button onclick="openReports()">Reports</button>
+
+        <button onclick="openSettings()">Settings</button>
+
+    </div>
+
+    <script src="js/menu.js"></script>
+    <script src="js/database.js"></script>
+    <script src="js/app.js"></script>
+
+</body>
+</html>
