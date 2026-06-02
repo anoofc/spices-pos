@@ -1,55 +1,66 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>POS</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
 
-<header>
-    <h1>SPICES POS</h1>
-    <button onclick="goHome()">🏠 Home</button>
-</header>
+    <header>
+        <h1>SPICES POS</h1>
+        <button onclick="goHome()">🏠 Home</button>
+    </header>
 
-<div class="pos-container">
+    <div class="pos-container">
 
-    <div class="menu-section" id="menuSection">
+        <div class="category-panel">
+
+            <input type="text" id="searchBox" placeholder="Search Item..." onkeyup="searchItems()">
+
+            <div id="categoryList"></div>
+
+        </div>
+
+        <div class="menu-section" id="menuSection">
+        </div>
+
+        <div class="cart-section">
+
+            <h2>Cart</h2>
+
+            <div id="cartItems"></div>
+
+            <hr>
+
+            <h3>Subtotal:
+                <span id="subtotal">0.00</span>
+            </h3>
+
+            <h3>VAT (15%):
+                <span id="vat">0.00</span>
+            </h3>
+
+            <h2>Total:
+                <span id="total">0.00</span>
+                <p style="color:#aaa;">
+                    Prices include VAT
+                </p>
+            </h2>
+
+            <button onclick="completeSale('Cash')">CASH</button>
+            <button onclick="completeSale('Card')">CARD</button>
+            <button onclick="clearCart()"> Clear Cart </button>
+
+        </div>
+
     </div>
 
-    <div class="cart-section">
-
-        <h2>Cart</h2>
-
-        <div id="cartItems"></div>
-
-        <hr>
-
-        <h3>Subtotal:
-            <span id="subtotal">0.00</span>
-        </h3>
-
-        <h3>VAT (15%):
-            <span id="vat">0.00</span>
-        </h3>
-
-        <h2>Total:
-            <span id="total">0.00</span>
-            <p style="color:#aaa;">
-                Prices include VAT
-            </p>
-        </h2>
-
-        <button onclick="completeSale('Cash')">CASH</button>
-        <button onclick="completeSale('Card')">CARD</button>
-        <button onclick="clearCart()"> Clear Cart </button>
-
-    </div>
-
-</div>
-
-<script src="js/menu.js"></script>
-<script src="js/database.js"></script>
-<script src="js/pos.js"></script>
+    <script src="js/menu.js"></script>
+    <script src="js/database.js"></script>
+    <script src="js/pos.js"></script>
 
 </body>
+
 </html>

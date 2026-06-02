@@ -18,9 +18,9 @@ function openSettings() {
     alert("Settings Screen Coming Next");
 }
 document.getElementById("todayDate").innerHTML =
-new Date().toLocaleDateString();
+    new Date().toLocaleDateString();
 
-function loadDashboard(){
+function loadDashboard() {
 
     const sales =
         JSON.parse(
@@ -31,14 +31,14 @@ function loadDashboard(){
     let cashTotal = 0;
     let cardTotal = 0;
 
-    sales.forEach(sale=>{
+    sales.forEach(sale => {
 
         salesTotal += sale.total;
 
-        if(sale.paymentMethod === "Cash")
+        if (sale.paymentMethod === "Cash")
             cashTotal += sale.total;
 
-        if(sale.paymentMethod === "Card")
+        if (sale.paymentMethod === "Card")
             cardTotal += sale.total;
     });
 

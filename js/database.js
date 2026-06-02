@@ -2,27 +2,27 @@ let sales = [];
 let purchases = [];
 let expenses = [];
 
-function getNextInvoiceNo(){
+function getNextInvoiceNo() {
 
     let invoiceNo =
         localStorage.getItem("invoiceNo");
 
-    if(!invoiceNo){
+    if (!invoiceNo) {
 
         invoiceNo = 1;
     }
 
     localStorage.setItem(
         "invoiceNo",
-        Number(invoiceNo)+1
+        Number(invoiceNo) + 1
     );
 
     return "INV-" +
         String(invoiceNo)
-        .padStart(5,'0');
+            .padStart(5, '0');
 }
 
-function saveSale(sale){
+function saveSale(sale) {
 
     let sales =
         JSON.parse(

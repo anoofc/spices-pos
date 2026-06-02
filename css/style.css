@@ -51,6 +51,51 @@ button {
     display:flex;
     height:100vh;
 }
+.category-panel{
+
+    width:18%;
+
+    background:#2c2c2c;
+
+    padding:10px;
+}
+
+.category-btn{
+
+    width:100%;
+
+    margin-bottom:8px;
+
+    padding:12px;
+
+    border:none;
+
+    background:#444;
+
+    color:white;
+
+    border-radius:8px;
+
+    cursor:pointer;
+}
+
+.category-btn:hover{
+
+    background:#ff6b00;
+}
+
+#searchBox{
+
+    width:100%;
+
+    padding:10px;
+
+    margin-bottom:15px;
+
+    border-radius:8px;
+
+    border:none;
+}
 
 .menu-section{
     width:70%;

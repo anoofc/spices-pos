@@ -3,47 +3,105 @@ let cart = [];
 function loadMenu() {
 
     const menuDiv =
-        document.getElementById("menuSection");
+        document.getElementById(
+            "menuSection"
+        );
 
-    menuItems.forEach(item => {
+    menuDiv.innerHTML = "";
+
+    let filtered =
+        selectedCategory === "All"
+            ? menuItems
+            : menuItems.filter(
+                item =>
+                    item.category ===
+                    selectedCategory
+            );
+
+    filtered.forEach(item => {
 
         menuDiv.innerHTML += `
-            <div class="menu-item"
-                 onclick="addToCart(${item.id})">
+        <div class="menu-item"
+            onclick="addToCart(${item.id})">
 
-                <h3>${item.name}</h3>
+            <h3>${item.name}</h3>
 
-                <p>${item.price} SAR</p>
+            <p>${item.price} SAR</p>
 
-            </div>
+        </div>
         `;
     });
 }
 
-function addToCart(id){
+function filterCategory(category){
+
+    selectedCategory = category;
+
+    loadMenu();
+}
+
+function searchItems(){
+
+    const searchText =
+        document
+        .getElementById(
+            "searchBox"
+        )
+        .value
+        .toLowerCase();
+
+    const menuDiv =
+        document.getElementById(
+            "menuSection"
+        );
+
+    menuDiv.innerHTML = "";
+
+    menuItems
+    .filter(item =>
+        item.name
+        .toLowerCase()
+        .includes(searchText)
+    )
+    .forEach(item=>{
+
+        menuDiv.innerHTML += `
+        <div class="menu-item"
+            onclick="addToCart(${item.id})">
+
+            <h3>${item.name}</h3>
+
+            <p>${item.price} SAR</p>
+
+        </div>
+        `;
+    });
+}
+
+function addToCart(id) {
 
     const existingItem =
         cart.find(item => item.id === id);
 
-    if(existingItem){
+    if (existingItem) {
 
         existingItem.qty++;
 
-    }else{
+    } else {
 
         const menuItem =
             menuItems.find(x => x.id === id);
 
         cart.push({
             ...menuItem,
-            qty:1
+            qty: 1
         });
     }
 
     updateCart();
 }
 
-function updateCart(){
+function updateCart() {
 
     let subtotal = 0;
 
@@ -52,11 +110,11 @@ function updateCart(){
 
     cartDiv.innerHTML = "";
 
-    cart.forEach(item=>{
+    cart.forEach(item => {
 
-    subtotal += item.price * item.qty;
+        subtotal += item.price * item.qty;
 
-    cartDiv.innerHTML += `
+        cartDiv.innerHTML += `
     <div class="cart-item">
 
         <div>
@@ -78,11 +136,11 @@ function updateCart(){
 
     </div>
     `;
-});
+    });
 
-let total = subtotal;
-let vat = total * (15 / 115);
-let netSale = total - vat;
+    let total = subtotal;
+    let vat = total * (15 / 115);
+    let netSale = total - vat;
     document.getElementById("subtotal")
         .innerHTML = netSale.toFixed(2);
     document.getElementById("vat")
@@ -91,9 +149,9 @@ let netSale = total - vat;
         .innerHTML = total.toFixed(2);
 }
 
-function completeSale(paymentMethod){
+function completeSale(paymentMethod) {
 
-    if(cart.length === 0){
+    if (cart.length === 0) {
 
         alert("Cart Empty");
 
@@ -106,7 +164,7 @@ function completeSale(paymentMethod){
     const total =
         parseFloat(
             document.getElementById("total")
-            .innerHTML
+                .innerHTML
         );
 
     const sale = {
@@ -114,13 +172,13 @@ function completeSale(paymentMethod){
         invoiceNo,
 
         date:
-        new Date().toISOString(),
+            new Date().toISOString(),
 
         paymentMethod,
 
         total,
 
-        items:cart
+        items: cart
     };
 
     saveSale(sale);
@@ -136,9 +194,9 @@ function completeSale(paymentMethod){
     updateCart();
 }
 
-loadMenu();
 
-function increaseQty(id){
+
+function increaseQty(id) {
 
     const item =
         cart.find(x => x.id === id);
@@ -148,14 +206,14 @@ function increaseQty(id){
     updateCart();
 }
 
-function decreaseQty(id){
+function decreaseQty(id) {
 
     const item =
         cart.find(x => x.id === id);
 
     item.qty--;
 
-    if(item.qty <= 0){
+    if (item.qty <= 0) {
 
         cart =
             cart.filter(x => x.id !== id);
@@ -164,16 +222,55 @@ function decreaseQty(id){
     updateCart();
 }
 
-function goHome(){
+function goHome() {
     window.location.href = "index.html";
 }
 
-function clearCart(){
+function clearCart() {
 
-    if(confirm("Clear cart?")){
+    if (confirm("Clear cart?")) {
 
         cart = [];
 
         updateCart();
     }
 }
+
+let selectedCategory = "All";
+
+function loadCategories() {
+
+    const categories =
+        [...new Set(
+            menuItems.map(
+                item => item.category
+            )
+        )];
+
+    const categoryDiv =
+        document.getElementById(
+            "categoryList"
+        );
+
+    categoryDiv.innerHTML = `
+        <button
+            class="category-btn"
+            onclick="filterCategory('All')">
+            All
+        </button>
+    `;
+
+    categories.forEach(cat => {
+
+        categoryDiv.innerHTML += `
+            <button
+                class="category-btn"
+                onclick="filterCategory('${cat}')">
+                ${cat}
+            </button>
+        `;
+    });
+}
+
+loadCategories();
+loadMenu();
