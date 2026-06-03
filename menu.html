@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Management</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .form-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #2c2c2c;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .form-container h2 {
+            margin-top: 0;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .form-buttons button {
+            width: auto;
+            padding: 10px 20px;
+            height: auto;
+        }
+
+        .form-buttons .cancel-btn {
+            background: #666;
+        }
+
+        .form-buttons .cancel-btn:hover {
+            background: #888;
+        }
+
+        .menu-list {
+            max-width: 900px;
+            margin: 20px auto;
+        }
+
+        .menu-list h2 {
+            text-align: center;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .menu-item-card {
+            background: #2c2c2c;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            position: relative;
+        }
+
+        .menu-item-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .menu-item-card h3 {
+            margin: 10px 0 5px 0;
+        }
+
+        .menu-item-card p {
+            margin: 5px 0;
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        .menu-item-card .price {
+            color: #ffb347;
+            font-weight: bold;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+
+        .menu-item-card .status {
+            font-size: 12px;
+            padding: 5px 10px;
+            border-radius: 5px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .status.active {
+            background: #2a5a2a;
+            color: #4ade80;
+        }
+
+        .status.inactive {
+            background: #5a2a2a;
+            color: #ff6b6b;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .item-actions button {
+            width: auto;
+            height: auto;
+            padding: 6px 10px;
+            font-size: 12px;
+            flex: 1;
+        }
+
+        .edit-btn {
+            background: #3366ff;
+        }
+
+        .edit-btn:hover {
+            background: #5588ff;
+        }
+
+        .delete-btn {
+            background: #cc3333;
+        }
+
+        .delete-btn:hover {
+            background: #ff3333;
+        }
+
+        .toggle-btn {
+            background: #ff9500;
+        }
+
+        .toggle-btn:hover {
+            background: #ffb347;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 40px 20px;
+            color: #aaa;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Menu Management</h1>
+        <button onclick="goHome()">🏠 Home</button>
+    </header>
+
+    <div class="form-container">
+        <h2 id="formTitle">Add New Menu Item</h2>
+        <form id="menuForm" onsubmit="saveMenuItem(event)">
+            <input type="hidden" id="menuItemId">
+
+            <div class="form-group">
+                <label for="itemName">Item Name:</label>
+                <input type="text" id="itemName" required>
+            </div>
+
+            <div class="form-group">
+                <label for="itemCategory">Category:</label>
+                <input type="text" id="itemCategory" placeholder="e.g., Biriyani, Fish, Beverage" required>
+            </div>
+
+            <div class="form-group">
+                <label for="itemPrice">Price (SAR):</label>
+                <input type="number" id="itemPrice" step="0.01" min="0" required>
+            </div>
+
+            <div class="form-group">
+                <label for="itemImage">Image URL:</label>
+                <input type="text" id="itemImage" placeholder="e.g., images/menu/chicken_biriyani.png" required>
+            </div>
+
+            <div class="form-buttons">
+                <button type="submit" id="submitBtn">Add Item</button>
+                <button type="button" class="cancel-btn" onclick="resetForm()">Clear</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="menu-list">
+        <h2>Current Menu</h2>
+        <div id="menuContainer"></div>
+    </div>
+
+    <script src="js/database.js"></script>
+    <script src="js/menu.js"></script>
+    <script src="js/menuAdmin.js"></script>
+
+</body>
+
+</html>

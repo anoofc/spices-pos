@@ -3,59 +3,62 @@ function openPOS() {
 }
 
 function openPurchases() {
-    alert("Purchases Screen Coming Next");
+    window.location.href = "purchases.html";
 }
 
 function openExpenses() {
-    alert("Expenses Screen Coming Next");
+    window.location.href = "expenses.html";
 }
 
 function openReports() {
-    alert("Reports Screen Coming Next");
+    window.location.href = "reports.html";
+}
+
+function openMenuManagement() {
+    window.location.href = "menu.html";
+}
+
+function openInvoices() {
+    window.location.href = "invoices.html";
 }
 
 function openSettings() {
-    alert("Settings Screen Coming Next");
+    window.location.href = "settings.html";
 }
-document.getElementById("todayDate").innerHTML =
-    new Date().toLocaleDateString();
+
+document.getElementById("todayDate").innerHTML = new Date().toLocaleDateString();
 
 function loadDashboard() {
-
-    const sales =
-        JSON.parse(
-            localStorage.getItem("sales")
-        ) || [];
+    const sales = JSON.parse(localStorage.getItem("sales")) || [];
+    const purchases = JSON.parse(localStorage.getItem("purchases")) || [];
+    const expenses = JSON.parse(localStorage.getItem("expenses")) || [];
 
     let salesTotal = 0;
     let cashTotal = 0;
     let cardTotal = 0;
+    let purchasesTotal = 0;
+    let expensesTotal = 0;
 
     sales.forEach(sale => {
-
         salesTotal += sale.total;
-
-        if (sale.paymentMethod === "Cash")
-            cashTotal += sale.total;
-
-        if (sale.paymentMethod === "Card")
-            cardTotal += sale.total;
+        if (sale.paymentMethod === "Cash") cashTotal += sale.total;
+        if (sale.paymentMethod === "Card") cardTotal += sale.total;
     });
 
-    document.getElementById("salesAmount")
-        .innerHTML =
-        salesTotal.toFixed(2) +
-        " SAR";
+    purchases.forEach(p => {
+        purchasesTotal += p.amount;
+    });
 
-    document.getElementById("cashAmount")
-        .innerHTML =
-        cashTotal.toFixed(2) +
-        " SAR";
+    expenses.forEach(e => {
+        expensesTotal += e.amount;
+    });
 
-    document.getElementById("cardAmount")
-        .innerHTML =
-        cardTotal.toFixed(2) +
-        " SAR";
+    const profit = salesTotal - purchasesTotal - expensesTotal;
+
+    document.getElementById("salesAmount").innerHTML = salesTotal.toFixed(2) + " SAR";
+    document.getElementById("cashAmount").innerHTML = cashTotal.toFixed(2) + " SAR";
+    document.getElementById("cardAmount").innerHTML = cardTotal.toFixed(2) + " SAR";
+    document.getElementById("profitAmount").innerHTML = profit.toFixed(2) + " SAR";
 }
 
 loadDashboard();

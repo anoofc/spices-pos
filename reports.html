@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .reports-container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .date-selector {
+            background: #2c2c2c;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .date-selector input {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            margin: 0 10px;
+            font-size: 14px;
+        }
+
+        .date-selector button {
+            width: auto;
+            height: auto;
+            padding: 10px 20px;
+            margin: 0 5px;
+        }
+
+        .report-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .report-card {
+            background: #2c2c2c;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .report-card h3 {
+            margin: 0 0 10px 0;
+            color: #ff9500;
+            font-size: 14px;
+        }
+
+        .report-card .amount {
+            color: #ffb347;
+            font-size: 28px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .report-card .amount.positive {
+            color: #4ade80;
+        }
+
+        .report-card .amount.negative {
+            color: #ff6b6b;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #2c2c2c;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        table th {
+            background: #ff6b00;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        table td {
+            padding: 12px;
+            border-bottom: 1px solid #444;
+        }
+
+        table tr:hover {
+            background: #3a3a3a;
+        }
+
+        .report-section {
+            margin-bottom: 30px;
+        }
+
+        .report-section h2 {
+            border-bottom: 2px solid #ff6b00;
+            padding-bottom: 10px;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 20px;
+            color: #aaa;
+        }
+
+        @media (max-width: 768px) {
+            .report-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Reports</h1>
+        <button onclick="goHome()">🏠 Home</button>
+    </header>
+
+    <div class="reports-container">
+
+        <div class="date-selector">
+            <label for="reportDate">Select Date:</label>
+            <input type="date" id="reportDate">
+            <button onclick="loadDailyReport()">Daily Report</button>
+            <button onclick="showMonthlyReport()">Monthly Report</button>
+        </div>
+
+        <div id="reportContent"></div>
+
+    </div>
+
+    <script src="js/database.js"></script>
+    <script src="js/reports.js"></script>
+
+</body>
+
+</html>

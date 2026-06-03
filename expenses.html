@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expenses Management</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .form-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #2c2c2c;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .form-container h2 {
+            margin-top: 0;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .form-buttons button {
+            width: auto;
+            padding: 10px 20px;
+            height: auto;
+        }
+
+        .form-buttons .cancel-btn {
+            background: #666;
+        }
+
+        .form-buttons .cancel-btn:hover {
+            background: #888;
+        }
+
+        .expenses-list {
+            max-width: 900px;
+            margin: 20px auto;
+        }
+
+        .expenses-list h2 {
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #2c2c2c;
+            margin-top: 10px;
+        }
+
+        table th {
+            background: #ff6b00;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        table td {
+            padding: 12px;
+            border-bottom: 1px solid #444;
+        }
+
+        table tr:hover {
+            background: #3a3a3a;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-buttons button {
+            width: auto;
+            height: auto;
+            padding: 8px 12px;
+            font-size: 12px;
+        }
+
+        .delete-btn {
+            background: #cc3333;
+        }
+
+        .delete-btn:hover {
+            background: #ff3333;
+        }
+
+        .edit-btn {
+            background: #3366ff;
+        }
+
+        .edit-btn:hover {
+            background: #5588ff;
+        }
+
+        .summary-card {
+            max-width: 900px;
+            margin: 20px auto;
+            background: #2c2c2c;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .summary-card h3 {
+            margin: 0;
+            color: #ffb347;
+            font-size: 24px;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 20px;
+            color: #aaa;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Expenses Management</h1>
+        <button onclick="goHome()">🏠 Home</button>
+    </header>
+
+    <div class="form-container">
+        <h2>Add New Expense</h2>
+        <form id="expenseForm" onsubmit="addExpense(event)">
+            <div class="form-group">
+                <label for="expenseDate">Date:</label>
+                <input type="date" id="expenseDate" required>
+            </div>
+            <div class="form-group">
+                <label for="expenseCategory">Category:</label>
+                <select id="expenseCategory" required>
+                    <option value="">Select Category</option>
+                    <option value="Rent">Rent</option>
+                    <option value="Utilities">Utilities</option>
+                    <option value="Gas">Gas</option>
+                    <option value="Internet">Internet</option>
+                    <option value="Cleaning">Cleaning</option>
+                    <option value="Miscellaneous">Miscellaneous</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="expenseAmount">Amount (SAR):</label>
+                <input type="number" id="expenseAmount" step="0.01" min="0" required>
+            </div>
+            <div class="form-buttons">
+                <button type="submit">Add Expense</button>
+                <button type="reset" class="cancel-btn">Clear</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="summary-card">
+        <h3>Total Expenses: <span id="totalExpenses">0.00</span> SAR</h3>
+    </div>
+
+    <div class="expenses-list">
+        <h2>Expense History</h2>
+        <div id="expensesTable"></div>
+    </div>
+
+    <script src="js/database.js"></script>
+    <script src="js/expenses.js"></script>
+
+</body>
+
+</html>

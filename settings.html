@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .settings-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .settings-section {
+            background: #2c2c2c;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .settings-section h2 {
+            margin-top: 0;
+            color: #ff6b00;
+            font-size: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .form-buttons button {
+            width: auto;
+            padding: 10px 20px;
+            height: auto;
+            margin: 5px;
+        }
+
+        .danger-zone {
+            background: #3a2a2a;
+            border: 2px solid #cc3333;
+        }
+
+        .danger-zone h2 {
+            color: #ff6b6b;
+        }
+
+        .danger-btn {
+            background: #cc3333;
+            width: 100%;
+        }
+
+        .danger-btn:hover {
+            background: #ff3333;
+        }
+
+        .export-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .export-buttons button {
+            width: 100%;
+            height: auto;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        .info-text {
+            font-size: 12px;
+            color: #aaa;
+            margin-top: 5px;
+        }
+
+        .hidden-file {
+            display: none;
+        }
+
+        .success-message {
+            background: #2a5a2a;
+            border: 1px solid #4ade80;
+            color: #4ade80;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Settings</h1>
+        <button onclick="goHome()">🏠 Home</button>
+    </header>
+
+    <div class="settings-container">
+
+        <div id="successMessage" class="success-message"></div>
+
+        <div class="settings-section">
+            <h2>Restaurant Information</h2>
+            <div class="form-group">
+                <label for="restaurantName">Restaurant Name:</label>
+                <input type="text" id="restaurantName" value="SPICES FAST FOOD KERALA RESTAURANT">
+            </div>
+            <div class="form-group">
+                <label for="vatRate">VAT Rate (%):</label>
+                <input type="number" id="vatRate" value="15" step="0.1" min="0">
+            </div>
+            <div class="form-group">
+                <label for="currency">Currency:</label>
+                <input type="text" id="currency" value="SAR">
+            </div>
+            <button onclick="saveSettings()">Save Settings</button>
+        </div>
+
+        <div class="settings-section">
+            <h2>Data Management</h2>
+            <div class="export-buttons">
+                <button onclick="exportAllData()">Export All Data</button>
+                <button onclick="exportSalesData()">Export Sales</button>
+                <button onclick="exportPurchasesData()">Export Purchases</button>
+                <button onclick="exportExpensesData()">Export Expenses</button>
+            </div>
+            <div class="form-group" style="margin-top: 15px;">
+                <label for="importFile">Import Data from Backup:</label>
+                <input type="file" id="importFile" accept=".json">
+                <button onclick="importData()" style="width: 100%; margin-top: 5px;">Import</button>
+            </div>
+            <div class="info-text">
+                Choose a previously exported JSON file to restore your data. This will replace the current data.
+            </div>
+        </div>
+
+        <div class="settings-section danger-zone">
+            <h2>Danger Zone</h2>
+            <p style="color: #aaa; font-size: 14px;">Be careful! These actions cannot be undone.</p>
+            <button class="danger-btn" onclick="resetAllData()">Clear All Data</button>
+            <div class="info-text">
+                This will delete all sales, purchases, expenses, and menu data. Make sure you export a backup first!
+            </div>
+        </div>
+
+    </div>
+
+    <input type="file" id="hiddenImportInput" class="hidden-file">
+
+    <script src="js/database.js"></script>
+    <script src="js/settings.js"></script>
+
+</body>
+
+</html>
