@@ -50,6 +50,21 @@ function saveMenuItems(items) {
     localStorage.setItem("menuItems", JSON.stringify(items));
 }
 
+function handleImageUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const imageData = e.target.result;
+        document.getElementById("itemImage").dataset.imageData = imageData;
+
+        const preview = document.getElementById("imagePreview");
+        preview.innerHTML = `<img src="${imageData}" style="width: 100%; height: auto; border-radius: 5px;">`;
+    };
+    reader.readAsDataURL(file);
+}
+
 function saveMenuItem(event) {
     event.preventDefault();
 
@@ -57,10 +72,16 @@ function saveMenuItem(event) {
     const name = document.getElementById("itemName").value;
     const category = document.getElementById("itemCategory").value;
     const price = parseFloat(document.getElementById("itemPrice").value);
-    const image = document.getElementById("itemImage").value;
+    const imageInput = document.getElementById("itemImage");
+    const imageData = imageInput.dataset.imageData;
 
-    if (!name || !category || !price || !image) {
-        alert("Please fill all fields");
+    if (!name || !category || !price) {
+        alert("Please fill all fields (Name, Category, Price)");
+        return;
+    }
+
+    if (!imageData) {
+        alert("Please select an image");
         return;
     }
 
@@ -74,7 +95,7 @@ function saveMenuItem(event) {
                 name,
                 category,
                 price,
-                image
+                image: imageData
             };
             alert("Menu item updated successfully!");
         }
@@ -85,7 +106,7 @@ function saveMenuItem(event) {
             name,
             category,
             price,
-            image,
+            image: imageData,
             active: true
         });
         alert("Menu item added successfully!");
@@ -107,7 +128,11 @@ function editMenuItem(id) {
     document.getElementById("itemName").value = item.name;
     document.getElementById("itemCategory").value = item.category;
     document.getElementById("itemPrice").value = item.price;
-    document.getElementById("itemImage").value = item.image;
+
+    const preview = document.getElementById("imagePreview");
+    preview.innerHTML = `<img src="${item.image}" style="width: 100%; height: auto; border-radius: 5px;">`;
+
+    document.getElementById("itemImage").dataset.imageData = item.image;
     document.getElementById("formTitle").textContent = "Edit Menu Item";
     document.getElementById("submitBtn").textContent = "Update Item";
 
@@ -173,6 +198,8 @@ function loadMenuItems() {
 function resetForm() {
     document.getElementById("menuForm").reset();
     document.getElementById("menuItemId").value = "";
+    document.getElementById("itemImage").dataset.imageData = "";
+    document.getElementById("imagePreview").innerHTML = "";
     document.getElementById("formTitle").textContent = "Add New Menu Item";
     document.getElementById("submitBtn").textContent = "Add Item";
 }
@@ -182,6 +209,8 @@ function updatePOSMenu() {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
+    const imageInput = document.getElementById("itemImage");
+    imageInput.addEventListener("change", handleImageUpload);
     loadMenuItems();
     updatePOSMenu();
 });
