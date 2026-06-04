@@ -23,6 +23,20 @@ function openInvoices() {
 }
 
 function openSettings() {
+    const password = prompt("🔐 Enter admin password to access Settings:");
+
+    if (password === null) {
+        return;
+    }
+
+    const settings = JSON.parse(localStorage.getItem("settings")) || {};
+    const correctPassword = settings.adminPassword || "12345";
+
+    if (password !== correctPassword) {
+        alert("❌ Incorrect admin password! Access denied.");
+        return;
+    }
+
     window.location.href = "settings.html";
 }
 

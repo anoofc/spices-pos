@@ -2,22 +2,46 @@ function goHome() {
     window.location.href = "index.html";
 }
 
+function getAdminPassword() {
+    const settings = JSON.parse(localStorage.getItem("settings")) || {};
+    return settings.adminPassword || "12345";
+}
+
 function saveSettings() {
     const restaurantName = document.getElementById("restaurantName").value;
     const vatRate = document.getElementById("vatRate").value;
     const currency = document.getElementById("currency").value;
-    const adminPassword = document.getElementById("adminPassword").value;
+    const newPassword = document.getElementById("adminPassword").value;
 
-    if (!adminPassword) {
-        alert("Admin password cannot be empty!");
+    if (!restaurantName || !vatRate || !currency || !newPassword) {
+        alert("❌ All fields are required!");
         return;
+    }
+
+    const oldPassword = prompt("🔐 Enter your CURRENT admin password to verify:");
+    if (oldPassword === null) {
+        return;
+    }
+
+    const correctPassword = getAdminPassword();
+    if (oldPassword !== correctPassword) {
+        alert("❌ Incorrect current password! Settings not saved.");
+        return;
+    }
+
+    if (newPassword !== correctPassword) {
+        const confirmNewPassword = prompt("Confirm your NEW admin password:");
+        if (confirmNewPassword !== newPassword) {
+            alert("❌ Passwords do not match! Settings not saved.");
+            return;
+        }
     }
 
     const settings = {
         restaurantName,
         vatRate: parseFloat(vatRate),
         currency,
-        adminPassword
+        adminPassword: newPassword
     };
 
     localStorage.setItem("settings", JSON.stringify(settings));
@@ -45,24 +69,28 @@ function exportAllData() {
 
     const dataString = JSON.stringify(allData, null, 2);
     downloadFile(dataString, "spices-pos-backup.json");
+    showSuccessMessage("✅ Data exported successfully!");
 }
 
 function exportSalesData() {
     const sales = JSON.parse(localStorage.getItem("sales")) || [];
     const csv = convertToCSV(sales, ["invoiceNo", "date", "paymentMethod", "total"]);
     downloadFile(csv, "sales-export.csv");
+    showSuccessMessage("✅ Sales data exported!");
 }
 
 function exportPurchasesData() {
     const purchases = getPurchases();
     const csv = convertToCSV(purchases, ["date", "description", "amount"]);
     downloadFile(csv, "purchases-export.csv");
+    showSuccessMessage("✅ Purchases data exported!");
 }
 
 function exportExpensesData() {
     const expenses = getExpenses();
     const csv = convertToCSV(expenses, ["date", "category", "amount"]);
     downloadFile(csv, "expenses-export.csv");
+    showSuccessMessage("✅ Expenses data exported!");
 }
 
 function convertToCSV(data, headers) {
@@ -108,7 +136,7 @@ function importData() {
         try {
             const data = JSON.parse(e.target.result);
 
-            if (!confirm("This will replace all current data. Are you sure?")) {
+            if (!confirm("⚠️ This will replace all current data. Are you sure?")) {
                 return;
             }
 
@@ -128,18 +156,30 @@ function importData() {
                 localStorage.setItem("menuItems", JSON.stringify(data.menuItems));
             }
 
-            showSuccessMessage("Data imported successfully!");
+            showSuccessMessage("✅ Data imported successfully!");
             fileInput.value = "";
         } catch (error) {
-            alert("Error importing file: " + error.message);
+            alert("❌ Error importing file: " + error.message);
         }
     };
     reader.readAsText(file);
 }
 
 function resetAllData() {
-    if (confirm("Are you absolutely sure? This will delete ALL data including sales, purchases, expenses, and menu items. This cannot be undone!")) {
-        if (confirm("Click OK again to confirm. This is your last warning!")) {
+    const password = prompt("🔐 Enter admin password to clear all data:");
+
+    if (password === null) {
+        return;
+    }
+
+    const correctPassword = getAdminPassword();
+    if (password !== correctPassword) {
+        alert("❌ Incorrect admin password! Data not cleared.");
+        return;
+    }
+
+    if (confirm("⚠️ Are you absolutely sure? This will delete ALL data including sales, purchases, expenses, and menu items.")) {
+        if (confirm("🚨 Click OK again to confirm. This is your LAST WARNING! This action CANNOT be undone!")) {
             localStorage.removeItem("sales");
             localStorage.removeItem("purchases");
             localStorage.removeItem("expenses");
@@ -147,10 +187,11 @@ function resetAllData() {
             localStorage.removeItem("invoiceNo");
             localStorage.removeItem("settings");
 
-            showSuccessMessage("All data has been cleared!");
+            showSuccessMessage("✅ All data has been cleared!");
             setTimeout(() => {
+                alert("✅ System reset complete. Redirecting to dashboard...");
                 window.location.href = "index.html";
-            }, 2000);
+            }, 1500);
         }
     }
 }

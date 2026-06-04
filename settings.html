@@ -128,6 +128,18 @@
         <div id="successMessage" class="success-message"></div>
 
         <div class="settings-section">
+            <h2>🔐 Security Settings</h2>
+            <div class="form-group">
+                <label for="adminPassword">Admin Password:</label>
+                <input type="password" id="adminPassword" placeholder="Your secure password">
+                <div class="info-text">
+                    ⚠️ You will be asked for your CURRENT password before saving. Keep this password safe!
+                </div>
+            </div>
+            <button onclick="saveSettings()">🔒 Save Settings</button>
+        </div>
+
+        <div class="settings-section">
             <h2>Restaurant Information</h2>
             <div class="form-group">
                 <label for="restaurantName">Restaurant Name:</label>
@@ -140,10 +152,6 @@
             <div class="form-group">
                 <label for="currency">Currency:</label>
                 <input type="text" id="currency" value="SAR">
-            </div>
-            <div class="form-group">
-                <label for="adminPassword">Admin Password (for deleting sales):</label>
-                <input type="password" id="adminPassword" placeholder="Enter admin password" value="12345">
             </div>
             <button onclick="saveSettings()">Save Settings</button>
         </div>
@@ -167,11 +175,11 @@
         </div>
 
         <div class="settings-section danger-zone">
-            <h2>Danger Zone</h2>
+            <h2>🚨 Danger Zone</h2>
             <p style="color: #aaa; font-size: 14px;">Be careful! These actions cannot be undone.</p>
             <button class="danger-btn" onclick="resetAllData()">Clear All Data</button>
             <div class="info-text">
-                This will delete all sales, purchases, expenses, and menu data. Make sure you export a backup first!
+                This will delete all sales, purchases, expenses, and menu data. You will be asked for admin password. Make sure you export a backup first!
             </div>
         </div>
 
