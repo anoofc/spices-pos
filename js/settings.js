@@ -6,15 +6,22 @@ function saveSettings() {
     const restaurantName = document.getElementById("restaurantName").value;
     const vatRate = document.getElementById("vatRate").value;
     const currency = document.getElementById("currency").value;
+    const adminPassword = document.getElementById("adminPassword").value;
+
+    if (!adminPassword) {
+        alert("Admin password cannot be empty!");
+        return;
+    }
 
     const settings = {
         restaurantName,
         vatRate: parseFloat(vatRate),
-        currency
+        currency,
+        adminPassword
     };
 
     localStorage.setItem("settings", JSON.stringify(settings));
-    showSuccessMessage("Settings saved successfully!");
+    showSuccessMessage("✅ Settings saved successfully!");
 }
 
 function showSuccessMessage(message) {
@@ -158,5 +165,8 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     if (settings.currency) {
         document.getElementById("currency").value = settings.currency;
+    }
+    if (settings.adminPassword) {
+        document.getElementById("adminPassword").value = settings.adminPassword;
     }
 });

@@ -101,6 +101,49 @@
             color: #aaa;
         }
 
+        .sort-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin: 15px 0;
+            background: #2c2c2c;
+            padding: 15px;
+            border-radius: 8px;
+            flex-wrap: wrap;
+        }
+
+        .sort-container label {
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .sort-btn {
+            padding: 8px 15px;
+            background: #444;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: background 0.3s;
+        }
+
+        .sort-btn:hover {
+            background: #555;
+        }
+
+        .sort-btn.active {
+            background: #ff6b00;
+        }
+
+        .delete-btn {
+            background: #cc3333;
+        }
+
+        .delete-btn:hover {
+            background: #ff3333;
+        }
+
         .invoice-detail {
             max-width: 700px;
             margin: 20px auto;
@@ -244,7 +287,13 @@
         </div>
 
         <div class="invoices-list">
-            <h2>All Invoices</h2>
+            <h2>Daily Sales Records</h2>
+            <div class="sort-container">
+                <label>Sort by:</label>
+                <button class="sort-btn active" onclick="sortInvoices('date')">📅 Date (Newest)</button>
+                <button class="sort-btn" onclick="sortInvoices('amount')">💰 Amount</button>
+                <button class="sort-btn" onclick="sortInvoices('invoice')">🔢 Invoice #</button>
+            </div>
             <div id="invoicesTable"></div>
         </div>
     </div>

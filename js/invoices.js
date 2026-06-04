@@ -3,11 +3,47 @@ function goHome() {
 }
 
 let filteredSales = [];
+let currentSort = 'date';
+
+function getAdminPassword() {
+    const settings = JSON.parse(localStorage.getItem("settings")) || {};
+    return settings.adminPassword || "12345";
+}
 
 function loadInvoices() {
     const sales = JSON.parse(localStorage.getItem("sales")) || [];
-    filteredSales = [...sales].sort((a, b) => new Date(b.date) - new Date(a.date));
+    filteredSales = [...sales];
+    sortInvoices('date');
+}
+
+function sortInvoices(sortBy) {
+    currentSort = sortBy;
+
+    if (sortBy === 'date') {
+        filteredSales.sort((a, b) => new Date(b.date) - new Date(a.date));
+    } else if (sortBy === 'amount') {
+        filteredSales.sort((a, b) => b.total - a.total);
+    } else if (sortBy === 'invoice') {
+        filteredSales.sort((a, b) => {
+            const aNum = parseInt(a.invoiceNo.split('-')[1]);
+            const bNum = parseInt(b.invoiceNo.split('-')[1]);
+            return bNum - aNum;
+        });
+    }
+
+    updateSortButtons(sortBy);
     displayInvoices(filteredSales);
+}
+
+function updateSortButtons(activeSort) {
+    document.querySelectorAll('.sort-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+
+    const buttons = document.querySelectorAll('.sort-btn');
+    if (activeSort === 'date') buttons[0].classList.add('active');
+    else if (activeSort === 'amount') buttons[1].classList.add('active');
+    else if (activeSort === 'invoice') buttons[2].classList.add('active');
 }
 
 function displayInvoices(invoices) {
@@ -49,6 +85,7 @@ function displayInvoices(invoices) {
                 <div class="action-buttons">
                     <button class="view-btn" onclick="viewInvoice('${sale.invoiceNo}')">View</button>
                     <button class="print-btn" onclick="printInvoice('${sale.invoiceNo}')">Print</button>
+                    <button class="delete-btn" onclick="deleteSaleWithPassword('${sale.invoiceNo}')">Delete</button>
                 </div>
             </td>
         </tr>
@@ -63,15 +100,46 @@ function displayInvoices(invoices) {
     tableContainer.innerHTML = html;
 }
 
+function deleteSaleWithPassword(invoiceNo) {
+    const password = prompt("Enter admin password to delete this sale:");
+
+    if (password === null) {
+        return;
+    }
+
+    const correctPassword = getAdminPassword();
+
+    if (password !== correctPassword) {
+        alert("❌ Incorrect password! Sale not deleted.");
+        return;
+    }
+
+    if (!confirm("Are you sure you want to delete invoice " + invoiceNo + "? This action cannot be undone.")) {
+        return;
+    }
+
+    deleteSale(invoiceNo);
+}
+
+function deleteSale(invoiceNo) {
+    const sales = JSON.parse(localStorage.getItem("sales")) || [];
+    const updatedSales = sales.filter(sale => sale.invoiceNo !== invoiceNo);
+
+    localStorage.setItem("sales", JSON.stringify(updatedSales));
+    alert("✅ Invoice " + invoiceNo + " deleted successfully!");
+
+    loadInvoices();
+}
+
 function searchInvoices() {
     const searchText = document.getElementById("searchInvoice").value.toLowerCase();
     const sales = JSON.parse(localStorage.getItem("sales")) || [];
 
     filteredSales = sales.filter(sale =>
         sale.invoiceNo.toLowerCase().includes(searchText)
-    ).sort((a, b) => new Date(b.date) - new Date(a.date));
+    );
 
-    displayInvoices(filteredSales);
+    sortInvoices(currentSort);
 }
 
 function filterByDateRange() {
@@ -86,9 +154,9 @@ function filterByDateRange() {
         if (toDate && saleDate > toDate) return false;
 
         return true;
-    }).sort((a, b) => new Date(b.date) - new Date(a.date));
+    });
 
-    displayInvoices(filteredSales);
+    sortInvoices(currentSort);
 }
 
 function resetSearch() {
@@ -189,14 +257,37 @@ function viewInvoice(invoiceNo) {
         </div>
 
         <div class="print-buttons">
-            <button class="print-btn" onclick="window.print()">Print</button>
-            <button class="view-btn" onclick="goBackToInvoices()">Back to List</button>
+            <button class="print-btn" onclick="window.print()">🖨️ Print</button>
+            <button class="delete-btn" onclick="deleteSaleWithPasswordFromDetail('${sale.invoiceNo}')">🗑️ Delete</button>
+            <button class="view-btn" onclick="goBackToInvoices()">← Back to List</button>
         </div>
     </div>
     `;
 
     invoiceDetail.innerHTML = html;
     invoiceDetail.style.display = "block";
+}
+
+function deleteSaleWithPasswordFromDetail(invoiceNo) {
+    const password = prompt("Enter admin password to delete this sale:");
+
+    if (password === null) {
+        return;
+    }
+
+    const correctPassword = getAdminPassword();
+
+    if (password !== correctPassword) {
+        alert("❌ Incorrect password! Sale not deleted.");
+        return;
+    }
+
+    if (!confirm("Are you sure you want to delete invoice " + invoiceNo + "? This action cannot be undone.")) {
+        return;
+    }
+
+    deleteSale(invoiceNo);
+    goBackToInvoices();
 }
 
 function printInvoice(invoiceNo) {
@@ -214,6 +305,7 @@ function printInvoice(invoiceNo) {
 function goBackToInvoices() {
     document.getElementById("invoicesList").style.display = "block";
     document.getElementById("invoiceDetailView").style.display = "none";
+    loadInvoices();
 }
 
 document.addEventListener("DOMContentLoaded", function() {
