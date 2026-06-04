@@ -180,6 +180,9 @@ function resetAllData() {
 
     if (confirm("⚠️ Are you absolutely sure? This will delete ALL data including sales, purchases, expenses, and menu items.")) {
         if (confirm("🚨 Click OK again to confirm. This is your LAST WARNING! This action CANNOT be undone!")) {
+            const currentSettings = JSON.parse(localStorage.getItem("settings")) || {};
+            const adminPassword = currentSettings.adminPassword || "12345";
+
             localStorage.removeItem("sales");
             localStorage.removeItem("purchases");
             localStorage.removeItem("expenses");
@@ -187,7 +190,13 @@ function resetAllData() {
             localStorage.removeItem("invoiceNo");
             localStorage.removeItem("settings");
 
-            showSuccessMessage("✅ All data has been cleared!");
+            const preservedSettings = {
+                ...currentSettings,
+                adminPassword: adminPassword
+            };
+            localStorage.setItem("settings", JSON.stringify(preservedSettings));
+
+            showSuccessMessage("✅ All data has been cleared! (Admin password preserved)");
             setTimeout(() => {
                 alert("✅ System reset complete. Redirecting to dashboard...");
                 window.location.href = "index.html";
