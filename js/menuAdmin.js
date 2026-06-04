@@ -38,12 +38,25 @@ const defaultMenuItems = [
 ];
 
 function getStoredMenuItems() {
-    const stored = JSON.parse(localStorage.getItem("menuItems"));
-    if (!stored || stored.length === 0) {
+    let stored = localStorage.getItem("menuItems");
+
+    if (!stored) {
         localStorage.setItem("menuItems", JSON.stringify(defaultMenuItems));
-        return defaultMenuItems;
+        return JSON.parse(JSON.stringify(defaultMenuItems));
     }
-    return stored;
+
+    try {
+        const items = JSON.parse(stored);
+        if (!Array.isArray(items) || items.length === 0) {
+            localStorage.setItem("menuItems", JSON.stringify(defaultMenuItems));
+            return JSON.parse(JSON.stringify(defaultMenuItems));
+        }
+        return items;
+    } catch (e) {
+        console.error("Error parsing menu items:", e);
+        localStorage.setItem("menuItems", JSON.stringify(defaultMenuItems));
+        return JSON.parse(JSON.stringify(defaultMenuItems));
+    }
 }
 
 function saveMenuItems(items) {
@@ -69,14 +82,14 @@ function saveMenuItem(event) {
     event.preventDefault();
 
     const id = document.getElementById("menuItemId").value;
-    const name = document.getElementById("itemName").value;
-    const category = document.getElementById("itemCategory").value;
+    const name = document.getElementById("itemName").value.trim();
+    const category = document.getElementById("itemCategory").value.trim();
     const price = parseFloat(document.getElementById("itemPrice").value);
     const imageInput = document.getElementById("itemImage");
     const imageData = imageInput.dataset.imageData;
 
     if (!name || !category || !price) {
-        alert("Please fill all fields (Name, Category, Price)");
+        alert("Please fill all required fields");
         return;
     }
 
@@ -91,16 +104,17 @@ function saveMenuItem(event) {
         const index = items.findIndex(item => item.id == id);
         if (index !== -1) {
             items[index] = {
-                ...items[index],
+                id: parseInt(id),
                 name,
                 category,
                 price,
-                image: imageData
+                image: imageData,
+                active: items[index].active
             };
             alert("Menu item updated successfully!");
         }
     } else {
-        const newId = Math.max(...items.map(i => i.id), 0) + 1;
+        const newId = items.length > 0 ? Math.max(...items.map(i => i.id)) + 1 : 1;
         items.push({
             id: newId,
             name,
@@ -122,7 +136,10 @@ function editMenuItem(id) {
     const items = getStoredMenuItems();
     const item = items.find(i => i.id == id);
 
-    if (!item) return;
+    if (!item) {
+        alert("Item not found");
+        return;
+    }
 
     document.getElementById("menuItemId").value = item.id;
     document.getElementById("itemName").value = item.name;
@@ -131,8 +148,8 @@ function editMenuItem(id) {
 
     const preview = document.getElementById("imagePreview");
     preview.innerHTML = `<img src="${item.image}" style="width: 100%; height: auto; border-radius: 5px;">`;
-
     document.getElementById("itemImage").dataset.imageData = item.image;
+
     document.getElementById("formTitle").textContent = "Edit Menu Item";
     document.getElementById("submitBtn").textContent = "Update Item";
 
@@ -144,6 +161,7 @@ function deleteMenuItem(id) {
         let items = getStoredMenuItems();
         items = items.filter(i => i.id != id);
         saveMenuItems(items);
+        alert("Menu item deleted successfully!");
         loadMenuItems();
         updatePOSMenu();
     }
@@ -157,6 +175,7 @@ function toggleItemActive(id) {
         saveMenuItems(items);
         loadMenuItems();
         updatePOSMenu();
+        alert(`Item ${items[index].active ? 'activated' : 'deactivated'}`);
     }
 }
 
@@ -164,8 +183,8 @@ function loadMenuItems() {
     const items = getStoredMenuItems();
     const container = document.getElementById("menuContainer");
 
-    if (items.length === 0) {
-        container.innerHTML = '<div class="empty-message">No menu items yet</div>';
+    if (!items || items.length === 0) {
+        container.innerHTML = '<div class="empty-message">No menu items. Add your first item above.</div>';
         return;
     }
 
@@ -177,15 +196,15 @@ function loadMenuItems() {
 
         html += `
         <div class="menu-item-card">
-            <img src="${item.image}" alt="${item.name}">
+            <img src="${item.image}" alt="${item.name}" onerror="this.src='images/menu/placeholder.png'">
             <h3>${item.name}</h3>
             <p>${item.category}</p>
-            <div class="price">${item.price.toFixed(2)} SAR</div>
+            <div class="price">${parseFloat(item.price).toFixed(2)} SAR</div>
             <span class="status ${statusClass}">${statusText}</span>
             <div class="item-actions">
                 <button class="edit-btn" onclick="editMenuItem(${item.id})">Edit</button>
                 <button class="delete-btn" onclick="deleteMenuItem(${item.id})">Delete</button>
-                <button class="toggle-btn" onclick="toggleItemActive(${item.id})">Toggle</button>
+                <button class="toggle-btn" onclick="toggleItemActive(${item.id})">${item.active ? 'Deactivate' : 'Activate'}</button>
             </div>
         </div>
         `;
@@ -205,12 +224,29 @@ function resetForm() {
 }
 
 function updatePOSMenu() {
-    window.menuItems = getStoredMenuItems().filter(item => item.active);
+    const items = getStoredMenuItems();
+    window.menuItems = items.filter(item => item.active);
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-    const imageInput = document.getElementById("itemImage");
-    imageInput.addEventListener("change", handleImageUpload);
-    loadMenuItems();
-    updatePOSMenu();
-});
+function initializePage() {
+    try {
+        const items = getStoredMenuItems();
+        console.log("Loaded menu items:", items);
+        loadMenuItems();
+        updatePOSMenu();
+
+        const imageInput = document.getElementById("itemImage");
+        if (imageInput) {
+            imageInput.addEventListener("change", handleImageUpload);
+        }
+    } catch (e) {
+        console.error("Error initializing page:", e);
+        alert("Error loading menu. Please refresh the page.");
+    }
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializePage);
+} else {
+    initializePage();
+}

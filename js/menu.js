@@ -29,15 +29,25 @@ const defaultMenuItems = [
     }
 ];
 
-let menuItems = [];
-
 function loadStoredMenuItems() {
-    const stored = JSON.parse(localStorage.getItem("menuItems"));
-    if (!stored || stored.length === 0) {
-        menuItems = defaultMenuItems;
+    try {
+        const stored = localStorage.getItem("menuItems");
+        if (!stored) {
+            menuItems = JSON.parse(JSON.stringify(defaultMenuItems));
+            localStorage.setItem("menuItems", JSON.stringify(defaultMenuItems));
+        } else {
+            const items = JSON.parse(stored);
+            if (Array.isArray(items) && items.length > 0) {
+                menuItems = items.filter(item => item.active !== false);
+            } else {
+                menuItems = JSON.parse(JSON.stringify(defaultMenuItems));
+                localStorage.setItem("menuItems", JSON.stringify(defaultMenuItems));
+            }
+        }
+    } catch (e) {
+        console.error("Error loading menu items:", e);
+        menuItems = JSON.parse(JSON.stringify(defaultMenuItems));
         localStorage.setItem("menuItems", JSON.stringify(defaultMenuItems));
-    } else {
-        menuItems = stored.filter(item => item.active !== false);
     }
 }
 

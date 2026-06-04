@@ -165,5 +165,14 @@ function loadCategories() {
     });
 }
 
-loadCategories();
-loadMenu();
+function initializePOS() {
+    loadStoredMenuItems();
+    loadCategories();
+    loadMenu();
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializePOS);
+} else {
+    initializePOS();
+}
