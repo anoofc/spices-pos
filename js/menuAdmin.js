@@ -1,8 +1,4 @@
-function goHome() {
-    window.location.href = "index.html";
-}
-
-const defaultMenuItems = [
+const DEFAULT_MENU_ITEMS = [
     {
         id: 1,
         name: "Chicken Biriyani",
@@ -37,30 +33,46 @@ const defaultMenuItems = [
     }
 ];
 
-function getStoredMenuItems() {
-    let stored = localStorage.getItem("menuItems");
-
-    if (!stored) {
-        localStorage.setItem("menuItems", JSON.stringify(defaultMenuItems));
-        return JSON.parse(JSON.stringify(defaultMenuItems));
-    }
-
+function initializeDefaultMenuItems() {
     try {
-        const items = JSON.parse(stored);
-        if (!Array.isArray(items) || items.length === 0) {
-            localStorage.setItem("menuItems", JSON.stringify(defaultMenuItems));
-            return JSON.parse(JSON.stringify(defaultMenuItems));
+        const stored = localStorage.getItem("menuItems");
+        if (!stored) {
+            localStorage.setItem("menuItems", JSON.stringify(DEFAULT_MENU_ITEMS));
+            console.log("Initialized default menu items");
         }
-        return items;
     } catch (e) {
-        console.error("Error parsing menu items:", e);
-        localStorage.setItem("menuItems", JSON.stringify(defaultMenuItems));
-        return JSON.parse(JSON.stringify(defaultMenuItems));
+        console.error("Error initializing menu items:", e);
     }
 }
 
+function getStoredMenuItems() {
+    try {
+        const stored = localStorage.getItem("menuItems");
+        if (stored) {
+            const items = JSON.parse(stored);
+            if (Array.isArray(items) && items.length > 0) {
+                return items;
+            }
+        }
+    } catch (e) {
+        console.error("Error parsing menu items:", e);
+    }
+
+    localStorage.setItem("menuItems", JSON.stringify(DEFAULT_MENU_ITEMS));
+    return DEFAULT_MENU_ITEMS;
+}
+
 function saveMenuItems(items) {
-    localStorage.setItem("menuItems", JSON.stringify(items));
+    try {
+        localStorage.setItem("menuItems", JSON.stringify(items));
+    } catch (e) {
+        console.error("Error saving menu items:", e);
+        alert("Error saving menu items!");
+    }
+}
+
+function goHome() {
+    window.location.href = "index.html";
 }
 
 function handleImageUpload(event) {
@@ -225,28 +237,28 @@ function resetForm() {
 
 function updatePOSMenu() {
     const items = getStoredMenuItems();
-    window.menuItems = items.filter(item => item.active);
+    window.menuItems = items.filter(item => item.active !== false);
 }
 
-function initializePage() {
-    try {
-        const items = getStoredMenuItems();
-        console.log("Loaded menu items:", items);
-        loadMenuItems();
-        updatePOSMenu();
+function setupEventListeners() {
+    const imageInput = document.getElementById("itemImage");
+    if (imageInput) {
+        imageInput.addEventListener("change", handleImageUpload);
+    }
 
-        const imageInput = document.getElementById("itemImage");
-        if (imageInput) {
-            imageInput.addEventListener("change", handleImageUpload);
-        }
-    } catch (e) {
-        console.error("Error initializing page:", e);
-        alert("Error loading menu. Please refresh the page.");
+    const menuForm = document.getElementById("menuForm");
+    if (menuForm) {
+        menuForm.addEventListener("submit", saveMenuItem);
     }
 }
 
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializePage);
-} else {
-    initializePage();
+function initializeMenuPage() {
+    console.log("Initializing menu page...");
+    initializeDefaultMenuItems();
+    loadMenuItems();
+    updatePOSMenu();
+    setupEventListeners();
+    console.log("Menu page initialized");
 }
+
+document.addEventListener("DOMContentLoaded", initializeMenuPage);
